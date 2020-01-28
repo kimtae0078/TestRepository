@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="jdbcWebMapper">
+
+	<!-- 리스트 불러오기 -->
+	<select id="selectJdbcInfoList" resultType="JdbcInfo">
+		SELECT 
+			id				AS	idx,
+			date,
+			dbms,
+			ip,
+			port,
+			username,
+			password,
+			tb				AS	table,
+			is_collect		AS	isCollect,
+			interval_time	AS	intervalTime,
+			database_name	AS	databaseName
+		FROM
+			jdbc_info
+	</select>
+	
+	<select id="selectOneJdbcInfo" resultType="JdbcInfo" parameterType="String">
+		SELECT 
+			id				AS	idx,
+			date,
+			dbms,
+			ip,
+			port,
+			username,
+			password,
+			tb				AS	table,
+			is_collect		AS	isCollect,
+			interval_time	AS	intervalTime,
+			database_name	AS	databaseName
+		FROM
+			jdbc_info
+		WHERE
+			id = #{idx}
+	</select>
+	
+	<select id="selectOneKeyInfo" resultType="KeyInfo" parameterType="String">
+		SELECT 
+			order_col_key1		AS	orderColKey1,
+			order_col_key2		AS	orderColKey2,
+			uniq_col_key1		AS	uniqColKey1,
+			uniq_col_key2		AS	uniqColKey2
+		FROM
+			key_info
+		WHERE
+			jdbc_idx = #{idx}
+	</select>
+
+	<insert id="insertScheduler" parameterType="JdbcInfo">
+		INSERT INTO	jdbc_info(
+			id,
+			dbms,
+			ip,
+			port,
+			username,
+			password,
+			tb,
+			is_collect,
+			interval_time,
+			database_name
+		)VALUES(
+			#{idx},
+			#{dbms},
+			#{ip},
+			#{port},
+			#{username},
+			#{password},
+			#{table},
+			#{isCollect},
+			#{intervalTime},
+			#{databaseName}
+		)
+	</insert>
+
+	<insert id="insertTableKey" parameterType="KeyInfo">
+		INSERT INTO key_info(
+			jdbc_idx,
+			order_col_key1,
+			order_col_key2,
+			uniq_col_key1,
+			uniq_col_key2
+		)VALUES(
+			#{jdbcIdx},
+			#{orderColKey1},
+			#{orderColKey2},
+			#{uniqColKey1},
+			#{uniqColKey2}
+		)
+	</insert>
+	
+	<delete id="deleteScheduler" parameterType="String">
+		DELETE FROM
+			jdbc_info
+		WHERE
+			id = #{idx}
+	</delete>
+
+	<delete id="deleteKey" parameterType="String">
+		DELETE FROM
+			key_info
+		WHERE
+			jdbc_idx = #{idx}
+	</delete>
+
+	<update id="updateScheduler" parameterType="JdbcInfo">
+		UPDATE
+			jdbc_info
+		SET
+			dbms = #{dbms},
+			ip = #{ip},
+			port = #{port},
+			username = #{username},
+			password = #{password},
+			tb = #{table},
+			is_collect = #{isCollect},
+			interval_time = #{intervalTime},
+			database_name = #{databaseName}
+		WHERE
+			id = #{idx}
+	</update>
+	
+	<update id="uptateTableKey" parameterType="KeyInfo">
+		UPDATE
+			key_info
+		SET
+			order_col_key1 = #{orderColKey1},
+			order_col_key2 = #{orderColKey2},
+			uniq_col_key1 = #{uniqColKey1},
+			uniq_col_key2 = #{uniqColKey2},
+			order_col_val1 = #{orderColVal1},
+			order_col_val2 = #{orderColVal2},
+			uniq_col_val1 = #{uniqColVal1},
+			uniq_col_val2 = #{uniqColVal2}
+		WHERE
+			jdbc_idx = #{jdbcIdx}
+	</update>
+
+</mapper>
